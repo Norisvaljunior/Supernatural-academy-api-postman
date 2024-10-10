@@ -24,7 +24,7 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - name: Copiando os arquivos para maquina virtual
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
       # Runs a set of commands using the runners shell
       - name: Etapa 01 - Verificação versão do Node e Newman
@@ -39,12 +39,12 @@ jobs:
      # Runs a set of command using the runners shell
       - name: Etapa 03 - Rodando as Collections de Testes
         run: |
-          newman run erp-qacoders.json -e erp-env.json --reporters cli,htmlextra --reporter-htmlextra-export ./results/report.html
+          newman run erp-qacoders.json -e erp-env.json --reporters cli,htmlextra --reporter-htmlextra-export report.html
 
       # Carregar relatório de teste
       - name: Etapa 04 Upload Test Report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v2
         with:
           name: test-report
           path: report.html
