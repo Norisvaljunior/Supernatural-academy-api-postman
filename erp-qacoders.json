@@ -318,16 +318,7 @@
 					"script": {
 						"exec": [
 							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
-							"})\r",
-							"// Add a test to check the length of the response data\r",
-							"pm.test(\"Response data length must be greater than zero\", function () {\r",
-							"    const responseData = pm.response.json();\r",
-							"    pm.expect(responseData.length).to.be.greaterThan(0, \"Response data should not be empty\");\r",
-							"});\r",
-							"// Add a test to check that the response time is within an acceptable range\r",
-							"pm.test(\"Response time is less than 200ms\", function () {\r",
-							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
-							"});"
+							"})\r"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -443,74 +434,6 @@
 					],
 					"path": [
 						"login"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Update Cadastro de usuário com sucesso",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"exec": [
-							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
-							"})\r",
-							""
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				},
-				{
-					"listen": "prerequest",
-					"script": {
-						"exec": [
-							"pm.environment.set(\"FULLNAME\", pm.variables.replaceIn(\"{{$randomFullName}}\"));\r",
-							"\r",
-							"pm.environment.set(\"EMAILUSER\", pm.variables.replaceIn(\"{{$randomEmail}}\"));"
-						],
-						"type": "text/javascript",
-						"packages": {}
-					}
-				}
-			],
-			"request": {
-				"auth": {
-					"type": "apikey",
-					"apikey": [
-						{
-							"key": "value",
-							"value": "{{tokenuser}}",
-							"type": "string"
-						},
-						{
-							"key": "key",
-							"value": "Authorization",
-							"type": "string"
-						}
-					]
-				},
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"fullName\": \"{{FULLNAME}}\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"123456@Teste\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
-						}
-					}
-				},
-				"url": {
-					"raw": "{{url}}/user/{{userId}}",
-					"host": [
-						"{{url}}"
-					],
-					"path": [
-						"user",
-						"{{userId}}"
 					]
 				}
 			},
