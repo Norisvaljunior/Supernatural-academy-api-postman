@@ -34,29 +34,20 @@ jobs:
       # Runs a single command using the runners shell
       - name: Etapa 02 - Html Extra Reporter
         run: |
-          npm fund
-          npm install -g newman
-          sudo npm install -g newman-reporter-htmlextra        
-
-      # Runs a set of command using the runners shell
+          sudo npm install -g newman-reporter-htmlextra
+  
+     # Runs a set of command using the runners shell
       - name: Etapa 03 - Rodando as Collections de Testes
         run: |
-          newman run erp-qacoders.json -e erp-env.json --delay-request 1 --reporters cli , -r htmlextra --reporters cli,htmlextra --reporter-htmlextra-export ./Report.html
-          
-      # - name: Etapa 04 - Salvando o Resultado dos Testes
-      #   uses: actions/upload-artifact@v4
-      #   if: always()
-      #   with:
-      #     name: report
-      #     path: ./results/
+          newman run erp-qacoders.json -e erp-env.json --reporters cli,htmlextra --reporter-htmlextra-export index.html
 
       # Carregar relatório de teste
       - name: Etapa 04 Upload Test Report
-        if: ${{ success() }}
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: results/index.html
+          path: index.html
              
   deploy:
     name: Deploy GitHub Pages 🌐
