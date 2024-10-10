@@ -1,0 +1,1898 @@
+{
+	"info": {
+		"_postman_id": "179b53c8-3f28-4506-bb08-a327c9c2ecd9",
+		"name": "ERP Academy Supernatural",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17398978",
+		"_collection_link": "https://universal-water-535592.postman.co/workspace/a7df6bd9-1283-4b37-b6fd-f73dc8be302f/collection/17398978-179b53c8-3f28-4506-bb08-a327c9c2ecd9?action=share&source=collection_link&creator=17398978"
+	},
+	"item": [
+		{
+			"name": "Login de acesso",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validate token\", function(){\r",
+							"    pm.expect(JSON.parse(responseBody).token).exist\r",
+							"});\r",
+							"\r",
+							"pm.environment.set('tokenAdmin',pm.response.json().token);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"mail\": \"{{mailAdmin}}\",\r\n  \"password\": \"{{passwordAdmin}}\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cadastro usuario com sucesso Copy",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"function gerarCPF() {\r",
+							"    let cpf = '';\r",
+							"    for (let i = 0; i < 11; i++) {\r",
+							"        cpf += Math.floor(Math.random() * 10); \r",
+							"    }\r",
+							"    return cpf;\r",
+							"}\r",
+							"pm.environment.set(\"CPF\", gerarCPF());\r",
+							"\r",
+							"pm.environment.set(\"EMAILUSER\", pm.variables.replaceIn(\"{{$randomEmail}}\"));\r",
+							"\r",
+							"pm.environment.set(\"FULLNAME\", pm.variables.replaceIn(\"{{$randomFullName}}\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"check is Name\", function (){\r",
+							"   let fullName = pm.environment.get('FULLNAME');  \r",
+							"pm.expect(fullName).to.eql(JSON.parse(responseBody).user.fullName);\r",
+							"})\r",
+							"\r",
+							"pm.environment.set('userId' , pm.response.json().user._id);\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenAdmin}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"{{FULLNAME}}\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"123456@Teste\",\r\n    \"accessProfile\": \"ADMIN\",\r\n    \"cpf\": \"{{CPF}}\",\r\n    \"confirmPassword\": \"123456@Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Consulta de usuario",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenAdmin}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Cadastro de empresa com sucesso",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"CORPORNAME\", pm.variables.replaceIn(\"{{$randomCompanyName}}\"));\r",
+							"\r",
+							"function gerarCNPJ() {\r",
+							"    let cnpj = '';\r",
+							"    for (let i = 0; i < 14; i++) {\r",
+							"        cnpj += Math.floor(Math.random() * 10); // Gera um dígito aleatório de 0 a 9\r",
+							"    }\r",
+							"    return cnpj;\r",
+							"}\r",
+							"pm.environment.set(\"REGISTRO\", gerarCNPJ());\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is within an acceptable range\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"});\r",
+							"\r",
+							"// Save the newCompany ID in a global variable\r",
+							"var responseBody = pm.response.json();\r",
+							"var newCompanyId = responseBody.newCompany._id;\r",
+							"pm.globals.set(\"newCompanyId\", newCompanyId);\r",
+							"\r",
+							"// Test the response against the saved newCompany ID value\r",
+							"pm.test(\"Check response for newCompany ID match\", function() {\r",
+							"    var savedNewCompanyId = pm.globals.get(\"newCompanyId\");\r",
+							"    pm.expect(responseBody.newCompany._id).to.eql(savedNewCompanyId);\r",
+							"});\r",
+							"\r",
+							"// Verify the length of the response data\r",
+							"pm.test(\"The length of the response data should be greater than zero\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(Object.keys(responseData).length).to.be.greaterThan(0, \"Response data should not be empty\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenAdmin}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"corporateName\": \"{{CORPORNAME}}\",\r\n  \"registerCompany\": \"{{REGISTRO}}\",\r\n  \"mail\": \"{{EMAILUSER}}\",\r\n  \"matriz\": \"{{CORPORNAME}}\",\r\n  \"responsibleContact\": \"Supernatural\",\r\n  \"telephone\": \"99999999999999\",\r\n  \"serviceDescription\": \"Testes Squad Supernatural\",\r\n  \"address\": [\r\n    {\r\n      \"zipCode\": \"04777001\",\r\n      \"city\": \"São Paulo\",\r\n      \"state\": \"SP\",\r\n      \"district\": \"Rua das Flores\",\r\n      \"street\": \"Avenida Interlagos\",\r\n      \"number\": \"50\",\r\n      \"complement\": \"de 4503 ao fim - lado ímpar\",\r\n      \"country\": \"Brasil\"\r\n    }\r\n  ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/company",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Lista cadastro de empresa",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"})\r",
+							"// Add a test to check the length of the response data\r",
+							"pm.test(\"Response data length must be greater than zero\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.length).to.be.greaterThan(0, \"Response data should not be empty\");\r",
+							"});\r",
+							"// Add a test to check that the response time is within an acceptable range\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenAdmin}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/company",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login User com sucesso",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.environment.set('tokenuser',pm.response.json().token);\r",
+							"\r",
+							"pm.test(\"Check is token exist\", function(){})\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenAdmin}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"123456@Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/login",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Cadastro de usuário com sucesso",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"let Message = \"Dados atualizados com sucesso!\";\r",
+							"console.log(Message);\r",
+							"pm.test (\"Check msg sucess update\", function(){\r",
+							"    console.log(responseBody.msg);\r",
+							"    pm.expect(Message).to.eql(JSON.parse(responseBody).msg);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"FULLNAME\", pm.variables.replaceIn(\"{{$randomFullName}}\"));\r",
+							"\r",
+							"pm.environment.set(\"EMAILUSER\", pm.variables.replaceIn(\"{{$randomEmail}}\"));"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"{{FULLNAME}}\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"123456@Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Nome completo com 100 caracteres",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Nomecomcemcaracteres Bbbbbbbbbbbbbbbbbbbb Cccccccccccccccccccccc Dddddddddddddddddddddd\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"123456@Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Senha com 12 caracteres",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Sprintum Senhacomdozecaracter\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"123456@Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Senha com 8 caracteres",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Sprintum Senhacomoitocaracter\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"12345@Te\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Status atualizado para true",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Statusatulizado\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"123456@Teste\",\r\n    \"status\": true\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirmar senha com senha diferente",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Confirmacaodesenhadiferente\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"Teste@123456\",\r\n    \"confirmPassword\": \"Test@123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirmar senha em branco",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Testedesenhaembranco\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \" \",\r\n    \"confirmPassword\": \" \"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "E-mail com espaço no domínio",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\" , function () { pm.response.to.have.status(400);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Teste Update Emailcomespaco\",\r\n    \"mail\": \"supernaturalupdate@ yahoo.com\",\r\n    \"password\": \"123456@Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "E-mail com espaço no Nome",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\" , function () { pm.response.to.have.status(400);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Teste Update Nomecomespaco\",\r\n    \"mail\": \"supernaturalupdate @yahoo.com\",\r\n    \"password\": \"123456@Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "E-mail com email em branco",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\" , function () { pm.response.to.have.status(400);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Teste Update Emailembranco\",\r\n    \"mail\": \" \",\r\n    \"password\": \"123456@Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "E-mail faltando caracter @",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\" , function () { pm.response.to.have.status(400);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Teste Update Nomecomespaco\",\r\n    \"mail\": \"supernaturalupdateyahoo.com\",\r\n    \"password\": \"123456@Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update STATUS INVALIDO",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Statusinvalido\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"123456@Teste\",\r\n    \"status\": false\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Status em branco",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\" , function () { pm.response.to.have.status(200);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Statusembranco\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"123456@Teste\",\r\n    \"status\": \" \"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Senha sem numero",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\" , function () { pm.response.to.have.status(400);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Sprintum Senhasemnumero\",\r\n    \"mail\": \"{{EMAILUSER}}\",\r\n    \"password\": \"@Teste\",\r\n    \"confirmPassword\": \"@Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/password/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"password",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Senha sem letra minuscula",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\" , function () { pm.response.to.have.status(400);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\": \"12345678@TESTE\",\r\n    \"confirmPassword\": \"12345678@TESTE\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/password/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"password",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Senha sem letra maiuscula",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\" , function () { pm.response.to.have.status(400);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\": \"1234567@teste\",\r\n    \"confirmPassword\": \"1234567@teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/password/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"password",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Senha sem caracter especial",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\" , function () { pm.response.to.have.status(400);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"password\": \"123456Teste\",\r\n    \"confirmPassword\": \"123456Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/password/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"password",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Senha em branco",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\" , function () { pm.response.to.have.status(400);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Sprintum Senhasemnumero\",\r\n    \"mail\": \"supernaturalsp1234@yahoo.com\",\r\n    \"password\": \" \",\r\n    \"confirmPassword\": \" \"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/password/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"password",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Senha com 7 caracteres",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\" , function () { pm.response.to.have.status(400);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Sprintum Senhacomsetecaracter\",\r\n    \"mail\": \"supernatural123@yahoo.com\",\r\n    \"password\": \"1234@Te\",\r\n    \"confirmPassword\": \"1234@Te\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/password/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"password",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Senha com 13 caracteres",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 400\" , function () { pm.response.to.have.status(400);\r",
+							"})\r",
+							"\r",
+							"pm.test(\"Validação gravação base FullName\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).fullName)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Mail\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).mail)\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Validação gravação base Password\", function(){\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.fullName).to.eql(JSON.parse(responseBody).password)\r",
+							"});\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "apikey",
+					"apikey": [
+						{
+							"key": "value",
+							"value": "{{tokenuser}}",
+							"type": "string"
+						},
+						{
+							"key": "key",
+							"value": "Authorization",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"fullName\": \"Supernatural Sprintum Senhacomtrezecaracter\",\r\n    \"mail\": \"supernaturaltestsen@yahoo.com\",\r\n    \"password\": \"12345678@Teste\",\r\n    \"confirmPassword\": \"12345678@Teste\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{url}}/user/password/{{userId}}",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"user",
+						"password",
+						"{{userId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "authToken",
+			"value": ""
+		}
+	]
+}
