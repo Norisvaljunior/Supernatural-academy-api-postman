@@ -48,7 +48,7 @@ jobs:
         if: always()
         with:
           name: report
-          path: ./result/
+          path: ./results/
              
   deploy:
     name: Deploy GitHub Pages 🌐
