@@ -53,7 +53,7 @@ jobs:
       # Carregar relatório de teste
       - name: Etapa 04 Upload Test Report
         if: ${{ success() }}
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: test-report
           path: results/index.html
