@@ -39,7 +39,7 @@ jobs:
      # Runs a set of command using the runners shell
       - name: Etapa 03 - Rodando as Collections de Testes
         run: |
-          newman run erp-qacoders.json -e erp-env.json --reporters cli,htmlextra --reporter-htmlextra-export report.html
+          newman run erp-qacoders.json -e erp-env.json --reporters cli,htmlextra --reporter-htmlextra-export ./results/report.html
 
       # Carregar relatório de teste
       - name: Etapa 04 Upload Test Report
@@ -47,7 +47,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: test-report
-          path: report.html
+          path: ./results/report.html
              
   deploy:
     name: Deploy GitHub Pages 🌐
