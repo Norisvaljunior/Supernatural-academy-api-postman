@@ -43,40 +43,48 @@ jobs:
         run: |
           newman run erp-qacoders.json -e erp-env.json --delay-request 1 --reporters cli , -r htmlextra --reporters cli,htmlextra --reporter-htmlextra-export ./Report.html
           
-      - name: Etapa 04 - Salvando o Resultado dos Testes
-        uses: actions/upload-artifact@v4
-        if: always()
+      # - name: Etapa 04 - Salvando o Resultado dos Testes
+      #   uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #     name: report
+      #     path: ./results/
+
+      # Carregar relatório de teste
+      - name: Etapa 04 Upload Test Report
+        if: ${{ success() }}
+        uses: actions/upload-artifact@v2
         with:
-          name: report
-          path: ./results/
+          name: test-report
+          path: results/index.html
              
-  deploy:
-    name: Deploy GitHub Pages 🌐
-    runs-on: ubuntu-latest
-    if: always()
-    needs: 
-      - test
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: https://Norisvaljunior.github.io/Supernatural-academy-api-postman/Report.html
-    steps:
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+  # deploy:
+  #   name: Deploy GitHub Pages 🌐
+  #   runs-on: ubuntu-latest
+  #   if: always()
+  #   needs: 
+  #     - test
+  #   permissions:
+  #     contents: read
+  #     pages: write
+  #     id-token: write
+  #   environment:
+  #     name: github-pages
+  #     url: https://Norisvaljunior.github.io/Supernatural-academy-api-postman/Report.html
+  #   steps:
+  #     - name: Setup Pages
+  #       uses: actions/configure-pages@v5
 
-      - name: Download Artifacts
-        uses: actions/download-artifact@v4
-        with: 
-          name: report
+  #     - name: Download Artifacts
+  #       uses: actions/download-artifact@v4
+  #       with: 
+  #         name: report
 
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./
+  #     - name: Upload artifact
+  #       uses: actions/upload-pages-artifact@v3
+  #       with:
+  #         path: ./
 
-      - name: Deploy to Github Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+  #     - name: Deploy to Github Pages
+  #       id: deployment
+  #       uses: actions/deploy-pages@v4
